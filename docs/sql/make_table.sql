@@ -1,0 +1,2 @@
+#make database
+CREATE DATABASE db_name DEFAULT CHARACTER SET utf8;

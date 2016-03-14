@@ -6,8 +6,12 @@ __Node__
 
 __npm packages__
 - twitter
+- xml2js
 - mysql
 - ejs
+
+## How to use
+Please show [docs](https://github.com/k-kuwahara/node-tweets-text-mining/blob/master/docs/).
 
 ## Execution
 __Learning__
