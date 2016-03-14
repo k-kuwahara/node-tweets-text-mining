@@ -21,3 +21,5 @@ __Server boot__
 $ node server.js
 ```
 
+## LICENSE
+[MIT](https://github.com/k-kuwahara/node-tweets-text-mining/blob/master/LICENSE)
