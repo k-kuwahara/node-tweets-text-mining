@@ -1,5 +1,5 @@
-var Twitter = require('twitter'),
-    config  = require('./config');
+var Twitter   = require('twitter'),
+    config    = require('./config');
 
 // create twitter instance
 var client = new Twitter({
@@ -9,9 +9,13 @@ var client = new Twitter({
    access_token_secret: config.access_token_secret,
 });
 
-//キーワード検索
-client.get('/search/tweets.json', {"q":"#モスバーガー", "count": 3}, function(err, data) {
+// search by key word
+// ※only japanese text
+client.get('/search/tweets.json', {"q":"", "count": 100}, function(err, data) {
    data.statuses.forEach(function(info) {
-       console.log(info.user.profile_image_url);
+      if (info.text.match(/^[ぁ-んァ-ン一-龠]+$/)) {
+//      if (info.text.match(/^[\p{Han}\p{Hiragana}\p{Katakana}]$/)) {
+         console.log(info.text);
+      }
    });
 });
