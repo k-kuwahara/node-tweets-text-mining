@@ -1,7 +1,13 @@
 var gulp   = require('gulp'),
+    tsc    = require('gulp-typescript'),
     uglify = require('gulp-uglify'),
     rename = require('gulp-rename');
 
+gulp.task('typescript', function() {
+   gulp.src('./src/ts/*.ts')
+      .pipe(tsc())
+      .pipe(gulp.dest('./src'))
+});
 gulp.task('minify', function() {
    gulp.src('./src/*.js')
       .pipe(uglify())
@@ -9,5 +15,5 @@ gulp.task('minify', function() {
       .pipe(gulp.dest('./src/min'));
 });
 
-gulp.task('default', ['minify']);
+gulp.task('default', ['typescript', 'minify']);
 
