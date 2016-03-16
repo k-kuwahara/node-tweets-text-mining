@@ -10,6 +10,13 @@ __npm packages__
 - mysql
 - ejs
 
+※if you need to be minify about js files
+__gulp packages__
+- gulp
+- gulp-uglify
+- gulp-rename
+
+
 ## How to use
 Please show [docs](https://github.com/k-kuwahara/node-tweets-text-mining/blob/master/docs/).
 
