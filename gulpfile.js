@@ -3,10 +3,10 @@ var gulp   = require('gulp'),
     rename = require('gulp-rename');
 
 gulp.task('minify', function() {
-   gulp.src('./src/*.js)
+   gulp.src('./src/*.js')
       .pipe(uglify())
       .pipe(rename({suffix: '.min'}))
-      .pipe(gulp.dest('./src/dist'));
+      .pipe(gulp.dest('./src/min'));
 });
 
 gulp.task('default', ['minify']);
