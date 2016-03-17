@@ -1,6 +1,5 @@
 /// <reference path="node.d.ts" />;
 
-import mysql   = require('mysql');
 import query   = require('./query');
 import discern = require('./discern');
 

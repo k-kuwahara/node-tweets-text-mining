@@ -1,7 +1,7 @@
 /// <reference path="./node.d.ts" />;
 
 import Twitter = require('twitter');
-import mysql   = require('mysql');
+import query   = require('./query');
 import config  = require('./config');
 import discern = require('./discern');
 
@@ -31,20 +31,7 @@ class Learning
          access_token_key:    config.access_token_key,
          access_token_secret: config.access_token_secret,
       });
-
-      /**
-       * Create mysql connection
-       *
-       * @param  void
-       * @return void
-       */
-      var connection: any = mysql.createConnection({
-         host:     config.host,
-         user:     config.user,
-         password: config.password,
-         database: config.database,
-      });
-   }
+  }
 
    /**
     * Training
