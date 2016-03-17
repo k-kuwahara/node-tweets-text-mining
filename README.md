@@ -13,6 +13,7 @@ __npm packages__
 ※if you need to be minify about js files  
 __gulp packages__
 - gulp
+- gulp-typescript
 - gulp-uglify
 - gulp-rename
 
