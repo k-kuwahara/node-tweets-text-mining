@@ -5,7 +5,7 @@ var gulp   = require('gulp'),
 
 gulp.task('typescript', function() {
    gulp.src('./src/ts/*.ts')
-      .pipe(tsc())
+      .pipe(tsc({module: 'commonjs'}))
       .pipe(gulp.dest('./src'))
 });
 gulp.task('minify', function() {
