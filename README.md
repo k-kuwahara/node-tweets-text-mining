@@ -9,6 +9,7 @@ __npm packages__
 - xml2js
 - mysql
 - ejs
+- typescript
 
 ※if you need to be minify about js files  
 __gulp packages__
@@ -24,13 +25,13 @@ Please show [docs](https://github.com/k-kuwahara/node-tweets-text-mining/blob/ma
 ## Execution
 __Learning__
 ```cmd
-$ npm install
-$ node learn.js
+$ npm install --no-bin-link
+$ node learn
 ```
 
 __Server boot__
 ```cmd
-$ node server.js
+$ node server
 ```
 
 ## LICENSE
