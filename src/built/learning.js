@@ -1,4 +1,3 @@
-"use strict";
 var twitter_1 = require('twitter');
 var config = require('./config');
 var discern = require('./discern');

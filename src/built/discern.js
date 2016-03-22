@@ -1,4 +1,3 @@
-"use strict";
 var Discern = (function () {
     function Discern() {
         this.DIMENSION = 140;
