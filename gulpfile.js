@@ -4,9 +4,10 @@ var gulp   = require('gulp'),
     rename = require('gulp-rename');
 
 gulp.task('typescript', function() {
-   gulp.src('./src/ts/*.ts')
-      .pipe(tsc())
-      .pipe(gulp.dest('./src'))
+   var tsconfig = require('./tsconfig.json');
+   gulp.src(tsconfig.filesGlob)
+      .pipe(tsc(tsconfig.compilerOptions))
+      .pipe(gulp.dest('./src/built/'))
 });
 gulp.task('minify', function() {
    gulp.src('./src/*.js')
