@@ -1,0 +1,14 @@
+{
+   "compilerOptions": {
+      "module"          : "commonjs",
+      "removeComments"  : true,
+      "noImplicitAny"   : false,
+      "moduleResolution": "node",
+      "sourceMap"       : false
+   },
+   "filesGlob": [
+      "./src/ts/*.ts",
+      "!./src/ts/*.d.ts",
+      "!./node_modules/**"
+   ]
+}
