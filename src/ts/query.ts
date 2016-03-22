@@ -1,5 +1,7 @@
-/// <reference path="./node.d.ts" />;
-import mysql = require('mysql'); 
+/// <reference path="./mysql.d.ts" />;
+
+import mysql  = require('mysql');
+import config = require('./config');
 
 export class Query
 {

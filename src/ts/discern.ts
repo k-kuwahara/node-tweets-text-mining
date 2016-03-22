@@ -1,3 +1,5 @@
+/// <reference path="./node.d.ts" />;
+
 /**
 * Calculate identification function y=w^Tx
 *
@@ -10,7 +12,15 @@ export class Discern
 {
    private DIMENSION: number = 140;
 
-   public execute(weight: number[] = [], data: number[] = []):any
+   /**
+    * Calculate two vectors
+    *
+    * @param number[] weight: weight vector
+    * @param number[] data  : input data
+    *
+    * @return any val: result calc(number or false)
+    */
+   public index(weight: number[] = [], data: number[] = []):any
    {
       var val: any = 0;
       if (weight == []) {

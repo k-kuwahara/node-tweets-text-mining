@@ -1,6 +1,6 @@
-/// <reference path="./node.d.ts" />;
+/// <reference path="./twitter.d.ts" />
 
-import Twitter = require('twitter');
+import Twitter from 'twitter';
 import query   = require('./query');
 import config  = require('./config');
 import discern = require('./discern');
@@ -12,6 +12,7 @@ interface Lerning_data
    label: number;
 }
 
+console.log(Twitter);
 class Learning
 {
    private DIMENSION: number = 140;
@@ -25,7 +26,7 @@ class Learning
        * @param  void
        * @return void
        */
-      var client: Twitter = new Twitter({
+      var client:any = new Twitter({
          consumer_key:        config.consumer_key,
          consumer_secret:     config.consumer_secret,
          access_token_key:    config.access_token_key,
@@ -34,14 +35,14 @@ class Learning
 
       // search by key word
       // ※only japanese text
-      client.get('/search/tweets.json', {"q":"", "count": 100}, function(err, data) {
+      client.get('/search/tweets.json', {"q":"#typescript", "count": 100}, function(err, data) {
          data.statuses.forEach(function(info) {
             if (info.text.match(/^[ぁ-んァ-ン一-龠]+$/)) {
                console.log(info.text);
             }
          });
       });
-  }
+   }
 
    /**
     * Training
@@ -61,7 +62,7 @@ class Learning
          var miss_count: number = 0;
          for (var i: number=0; i<data.input.length; i++) {
             // identification
-            val = discern.execute(weight, data.input);
+            val = discern.index(weight, data.input);
             // error check
             if (val === false) return false;
             // discern
@@ -95,3 +96,5 @@ class Learning
       return ret;
    }
 }
+
+var learning:Learning = new Learning;
