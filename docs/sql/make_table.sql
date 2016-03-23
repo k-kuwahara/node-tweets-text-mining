@@ -1,8 +1,8 @@
 # create database
-CREATE DATABASE `nodejs` CHARACTER SET utf8;
+CREATE DATABASE `db_name` CHARACTER SET utf8;
 
 # set db_name
-use nodejs;
+use db_name;
 
 # create tables
 CREATE TABLE `word_count`(
