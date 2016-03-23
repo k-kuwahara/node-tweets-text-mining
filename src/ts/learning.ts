@@ -1,10 +1,10 @@
 /// <reference path="./twitter.d.ts" />
 
-import Twitter = require('twitter');
-import query   = require('./query');
-import config  = require('./config');
-import discern = require('./discern');
-import mod_split   = require('./word_split');
+import Twitter   = require('twitter');
+import config    = require('./config');
+import discern   = require('./discern');
+import mod_query = require('./query');
+import mod_split = require('./word_split');
 
 // data model
 interface Lerning_data
@@ -26,12 +26,13 @@ class Learning
        * @param  void
        * @return void
        */
-      var client:any = new Twitter({
+      var client = new Twitter({
          consumer_key:        config.consumer_key,
          consumer_secret:     config.consumer_secret,
          access_token_key:    config.access_token_key,
          access_token_secret: config.access_token_secret,
       });
+      var query = new mod_query.Query();
 
       // search by key word
       // ※only japanese text
@@ -40,6 +41,7 @@ class Learning
             var words:string[] = mod_split.split(info.text);
             var time:any = setInterval(() => {
                if (words.length > 0 && words !== []) {
+
                   clearInterval(time);
                }
             }, 500);
@@ -100,4 +102,4 @@ class Learning
    }
 }
 
-var learning:Learning = new Learning;
+var learning:Learning = new Learning();

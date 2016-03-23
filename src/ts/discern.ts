@@ -20,7 +20,7 @@ export class Discern
     *
     * @return any val: result calc(number or false)
     */
-   public index(weight: number[] = [], data: number[] = []):any
+   public execute(weight: number[] = [], data: number[] = []):any
    {
       var val: any = 0;
       if (weight == []) {
@@ -73,4 +73,3 @@ export class Discern
       return ret;
    }
 }
-
