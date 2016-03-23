@@ -1,9 +1,10 @@
 /// <reference path="./twitter.d.ts" />
 
-import Twitter from 'twitter';
+import Twitter = require('twitter');
 import query   = require('./query');
 import config  = require('./config');
 import discern = require('./discern');
+import mod_split   = require('./word_split');
 
 // data model
 interface Lerning_data
@@ -12,7 +13,6 @@ interface Lerning_data
    label: number;
 }
 
-console.log(Twitter);
 class Learning
 {
    private DIMENSION: number = 140;
@@ -35,11 +35,14 @@ class Learning
 
       // search by key word
       // ※only japanese text
-      client.get('/search/tweets.json', {"q":"#typescript", "count": 100}, function(err, data) {
-         data.statuses.forEach(function(info) {
-            if (info.text.match(/^[ぁ-んァ-ン一-龠]+$/)) {
-               console.log(info.text);
-            }
+      client.get('/search/tweets.json', {"q":"#マクドナルド", "count": 100}, (err, data) => {
+         data.statuses.forEach((info) => {
+            var words:string[] = mod_split.split(info.text);
+            var time:any = setInterval(() => {
+               if (words.length > 0 && words !== []) {
+                  clearInterval(time);
+               }
+            }, 500);
          });
       });
    }
@@ -62,7 +65,7 @@ class Learning
          var miss_count: number = 0;
          for (var i: number=0; i<data.input.length; i++) {
             // identification
-            val = discern.index(weight, data.input);
+            val = discern.execute(weight, data.input);
             // error check
             if (val === false) return false;
             // discern

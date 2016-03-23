@@ -1,21 +1,26 @@
-var twitter_1 = require('twitter');
+"use strict";
+var Twitter = require('twitter');
 var config = require('./config');
 var discern = require('./discern');
+var mod_split = require('./word_split');
 var Learning = (function () {
     function Learning() {
         this.DIMENSION = 140;
         this.LC = 0.8;
-        var client = new twitter_1["default"]({
+        var client = new Twitter({
             consumer_key: config.consumer_key,
             consumer_secret: config.consumer_secret,
             access_token_key: config.access_token_key,
             access_token_secret: config.access_token_secret
         });
-        client.get('/search/tweets.json', { "q": "#typescript", "count": 100 }, function (err, data) {
+        client.get('/search/tweets.json', { "q": "#マクドナルド", "count": 100 }, function (err, data) {
             data.statuses.forEach(function (info) {
-                if (info.text.match(/^[ぁ-んァ-ン一-龠]+$/)) {
-                    console.log(info.text);
-                }
+                var words = mod_split.split(info.text);
+                var time = setInterval(function () {
+                    if (words.length > 0 && words !== []) {
+                        clearInterval(time);
+                    }
+                }, 500);
             });
         });
     }
@@ -28,7 +33,7 @@ var Learning = (function () {
             cnt++;
             var miss_count = 0;
             for (var i = 0; i < data.input.length; i++) {
-                val = discern.index(weight, data.input);
+                val = discern.execute(weight, data.input);
                 if (val === false)
                     return false;
                 if (val * data.label <= 0) {

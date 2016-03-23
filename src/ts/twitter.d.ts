@@ -1,13 +1,15 @@
 /// <reference path="./node.d.ts" />
 
 declare module "twitter" {
-   export default class Twitter {
-      constructor(options: {
-         consumer_key: string,
-         consumer_secret: string,
-         access_token_key: string,
-         access_token_secret: string
-      });
+   export class Twitter {
+      constructor(
+         options: {
+            consumer_key       : string,
+            consumer_secret    : string,
+            access_token_key   : string,
+            access_token_secret: string
+         }
+      );
 
       get(
          url     : string,
