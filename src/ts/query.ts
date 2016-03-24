@@ -1,10 +1,11 @@
-/// <reference path="./mysql.d.ts" />;
+/// <reference path="./mysql.d.ts" />
 
 import mysql  = require('mysql');
 import config = require('./config');
 
 export class Query
 {
+   connection:any;
    constructor()
    {
       /**
@@ -13,7 +14,7 @@ export class Query
        * @param  void
        * @return void
        */
-      var connection = mysql.createConnection({
+      this.connection = mysql.createConnection({
          host:     config.host,
          user:     config.user,
          password: config.password,
@@ -21,17 +22,14 @@ export class Query
       });
    }
 
-   public get_weight(): number[] {
+   public get_weight(): any {
       this.connection.query('SELECT * FROM weight_values', (err, result, fields) => {
-         console.log(result);
          return result;
       });
    }
 
-   public get_word_count(): number[] {
-      console.log(this.connection);
+   public get_word_count(): any {
       this.connection.query('SELECT * FROM word_count', (err, result, fields) => {
-         console.log(result);
          return result;
       });
    }
