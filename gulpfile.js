@@ -9,6 +9,11 @@ gulp.task('typescript', function() {
       .pipe(tsc(tsconfig.compilerOptions))
       .pipe(gulp.dest('./src/built/'))
 });
+
+gulp.task('watch', function() {
+   gulp.watch('./src/ts/*.ts', ['typescript']);
+});
+
 gulp.task('minify', function() {
    gulp.src('./src/*.js')
       .pipe(uglify())
