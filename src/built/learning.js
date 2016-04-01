@@ -1,19 +1,21 @@
 "use strict";
 var Twitter = require('twitter');
 var config = require('./config');
-var discern = require('./discern');
+var mod_discern = require('./discern');
+var mod_query = require('./query');
 var mod_split = require('./word_split');
 var Learning = (function () {
     function Learning() {
         this.DIMENSION = 140;
         this.LC = 0.8;
-        var client = new Twitter({
+        this.client = new Twitter({
             consumer_key: config.consumer_key,
             consumer_secret: config.consumer_secret,
             access_token_key: config.access_token_key,
             access_token_secret: config.access_token_secret
         });
-        client.get('/search/tweets.json', { "q": "#マクドナルド", "count": 100 }, function (err, data) {
+        var query = new mod_query.Query();
+        this.client.get('/search/tweets.json', { "q": "#マクドナルド", "count": 100 }, function (err, data) {
             data.statuses.forEach(function (info) {
                 var words = mod_split.split(info.text);
                 var time = setInterval(function () {
@@ -29,6 +31,7 @@ var Learning = (function () {
         var cnt = 0;
         var val = 0;
         var updated_weight = weight;
+        var discern = new mod_discern.Discern();
         while (true) {
             cnt++;
             var miss_count = 0;
@@ -57,4 +60,4 @@ var Learning = (function () {
     };
     return Learning;
 }());
-var learning = new Learning;
+var learning = new Learning();

@@ -1,3 +1,4 @@
+"use strict";
 var Simple_perceptron = (function () {
     function Simple_perceptron() {
         this.DATA_COUNT = 100;

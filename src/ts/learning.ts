@@ -1,10 +1,10 @@
 /// <reference path="./twitter.d.ts" />
 
-import Twitter   = require('twitter');
-import config    = require('./config');
-import discern   = require('./discern');
-import mod_query = require('./query');
-import mod_split = require('./word_split');
+import Twitter     = require('twitter');
+import config      = require('./config');
+import mod_discern = require('./discern');
+import mod_query   = require('./query');
+import mod_split   = require('./word_split');
 
 // data model
 interface Lerning_data
@@ -17,6 +17,7 @@ class Learning
 {
    private DIMENSION: number = 140;
    private LC       : number = 0.8;
+   client:Twitter.TwitterClient;
 
    constructor()
    {
@@ -26,17 +27,17 @@ class Learning
        * @param  void
        * @return void
        */
-      var client = new Twitter({
+      this.client = new Twitter({
          consumer_key:        config.consumer_key,
          consumer_secret:     config.consumer_secret,
          access_token_key:    config.access_token_key,
-         access_token_secret: config.access_token_secret,
+         access_token_secret: config.access_token_secret
       });
       var query = new mod_query.Query();
 
       // search by key word
       // ※only japanese text
-      client.get('/search/tweets.json', {"q":"#マクドナルド", "count": 100}, (err, data) => {
+      this.client.get('/search/tweets.json', {"q":"#マクドナルド", "count": 100}, (err, data) => {
          data.statuses.forEach((info) => {
             var words:string[] = mod_split.split(info.text);
             var time:any = setInterval(() => {
@@ -62,6 +63,7 @@ class Learning
       var cnt: number = 0;
       var val: any    = 0;
       var updated_weight: number[] = weight;
+      var discern:mod_discern.Discern = new mod_discern.Discern();
       while (true) {
          cnt++;
          var miss_count: number = 0;

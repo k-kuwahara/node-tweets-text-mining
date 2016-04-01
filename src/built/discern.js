@@ -1,8 +1,9 @@
+"use strict";
 var Discern = (function () {
     function Discern() {
         this.DIMENSION = 140;
     }
-    Discern.prototype.index = function (weight, data) {
+    Discern.prototype.execute = function (weight, data) {
         if (weight === void 0) { weight = []; }
         if (data === void 0) { data = []; }
         var val = 0;
