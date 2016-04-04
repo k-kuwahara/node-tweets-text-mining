@@ -1,11 +1,11 @@
 # create database
-CREATE DATABASE `db_name` CHARACTER SET utf8;
+CREATE DATABASE IF NOT EXISTS `db_name` CHARACTER SET utf8;
 
 # set db_name
 use db_name;
 
 # create tables
-CREATE TABLE `word_count`(
+CREATE TABLE IF NOT EXISTS `word_count`(
    `id`        INT(11) AUTO_INCREMENT   NOT NULL COMMENT '単語ID',
    `word`      VARCHAR(255)             NOT NULL COMMENT '単語',
    `label`     VARCHAR(255)             NOT NULL COMMENT 'ラベル',
@@ -13,9 +13,9 @@ CREATE TABLE `word_count`(
    PRIMARY KEY (`id`)
 ) DEFAULT CHARSET=utf8 COMMENT='単語';
 
-CREATE TABLE `weight_values`(
+CREATE TABLE IF NOT EXISTS `weight_values`(
    `weight_id` SMALLINT(6) AUTO_INCREMENT NOT NULL COMMENt '重みベクトルの添字',
-   `key`       VARCHAR(255)               NOT NULL COMMENT '重みベクトルのキー',
+   `keystr`    VARCHAR(255)               NOT NULL COMMENT '重みベクトルのキー',
    `value`     INT(11)          DEFAULT 1 NOT NULL COMMENt '重みベクトルの値',
    PRIMARY KEY (`weight_id`)
 ) DEFAULT CHARSET=utf8 COMMENT='重みベクトルの値';
@@ -56,3 +56,15 @@ INSERT INTO `word_count`(`word`, `label`, `count`) VALUES
 ('あかん', '-1', '0'),
 ('アカン', '-1', '0');
 
+delimiter //
+CREATE PROCEDURE insert_default_value(in x int, in y int)
+BEGIN
+WHILE x <= y DO
+INSERT INTO weight_values(keystr) VALUES(CONCAT("w", x));
+SET x = x + 1;
+END WHILE;
+END
+//
+
+delimiter ;
+CALL insert_default_value(1, 33);
