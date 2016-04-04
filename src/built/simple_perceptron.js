@@ -1,5 +1,12 @@
+/// <reference path="../ts/node.d.ts" />
 "use strict";
 var Simple_perceptron = (function () {
+    /**
+     * Create weight vector
+     *
+     * @param  void
+     * @return void
+     */
     function Simple_perceptron() {
         this.DATA_COUNT = 100;
         this.DIMENSION = 140;
