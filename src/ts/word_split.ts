@@ -22,7 +22,6 @@ export function split(text: string): string[] {
       res.setEncoding('utf8');
       res.on('error', (e) => {
          words.push('error');
-         console.log(e.message);
       });
       res.on('data', (data) => {
          parse(data, (err, result) => {
@@ -32,13 +31,11 @@ export function split(text: string): string[] {
                });
             } else {
                words.push('error');
-               console.log(err.message);
             }
          });
       });
    }).on('error', (e) => {
       words.push('error');
-      console.log(e.message);
    });
    return words;
 }

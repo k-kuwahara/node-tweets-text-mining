@@ -18,7 +18,6 @@ function split(text) {
         res.setEncoding('utf8');
         res.on('error', function (e) {
             words.push('error');
-            console.log(e.message);
         });
         res.on('data', function (data) {
             parse(data, function (err, result) {
@@ -29,13 +28,11 @@ function split(text) {
                 }
                 else {
                     words.push('error');
-                    console.log(err.message);
                 }
             });
         });
     }).on('error', function (e) {
         words.push('error');
-        console.log(e.message);
     });
     return words;
 }
