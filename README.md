@@ -10,6 +10,7 @@ __npm packages__
 - mysql
 - ejs
 - asyncblock
+- mecab-async
 - typescript
 
 ※if you need to be minify about js files  
