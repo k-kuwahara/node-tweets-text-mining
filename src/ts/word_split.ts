@@ -5,7 +5,8 @@ import config = require('./config');
 import http   = require('http');
 import xml2js = require('xml2js');
 
-export function split(text: string): string[] {
+export function split(text: string): string[]
+{
    var words: string[] = [];
    var parse = xml2js.parseString;
 
@@ -23,19 +24,29 @@ export function split(text: string): string[] {
       res.on('error', (e) => {
          words.push('error');
       });
-      res.on('data', (data) => {
-         parse(data, (err, result) => {
-            if (!err || result !== undefined) {
-               result.ResultSet.ma_result[0].word_list[0].word.forEach(function(word) {
-                  words.push(word.surface[0]);
-               });
+      res.on('data', (data) =>
+      {
+         parse(data, (err, result) =>
+         {
+            if (!err) {
+               if (!err || (result !== undefined && result.ResultSet.ma_result[0] !== undefined)) {
+                  result.ResultSet.ma_result[0].word_list[0].word.forEach((word) =>
+                  {
+                     words.push(word.surface[0]);
+                  });
+               } else {
+                  words.push('error');
+               }
             } else {
                words.push('error');
             }
          });
       });
-   }).on('error', (e) => {
+   })
+   .on('error', (e) =>
+   {
       words.push('error');
    });
+
    return words;
 }

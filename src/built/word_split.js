@@ -21,17 +21,23 @@ function split(text) {
         });
         res.on('data', function (data) {
             parse(data, function (err, result) {
-                if (!err || result !== undefined) {
-                    result.ResultSet.ma_result[0].word_list[0].word.forEach(function (word) {
-                        words.push(word.surface[0]);
-                    });
+                if (!err) {
+                    if (!err || (result !== undefined && result.ResultSet.ma_result[0] !== undefined)) {
+                        result.ResultSet.ma_result[0].word_list[0].word.forEach(function (word) {
+                            words.push(word.surface[0]);
+                        });
+                    }
+                    else {
+                        words.push('error');
+                    }
                 }
                 else {
                     words.push('error');
                 }
             });
         });
-    }).on('error', function (e) {
+    })
+        .on('error', function (e) {
         words.push('error');
     });
     return words;
