@@ -56,6 +56,7 @@ INSERT INTO `word_count`(`word`, `label`, `count`) VALUES
 ('あかん', '-1', '0'),
 ('アカン', '-1', '0');
 
+# initial datas
 delimiter //
 CREATE PROCEDURE insert_default_value(in x int, in y int)
 BEGIN
