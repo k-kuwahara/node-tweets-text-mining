@@ -10,43 +10,41 @@
 */
 export class Discern
 {
-   private DIMENSION: number = 140;
-
    /**
     * Calculate two vectors
     *
     * @param number[] weight: weight vector
-    * @param number[] data  : input data
+    * @param string[] data  : tmp word count
     *
     * @return any val: result calc(number or false)
     */
-   public execute(weight: number[] = [], data: number[] = []):any
+   public execute(weight: number[] = [], data: string[] = []): any
    {
       var val: any = 0;
-      if (weight == []) {
-         weight = Array.apply(null, new Array(this.DIMENSION));
+      if (weight === []) {
+         weight = Array.apply(null, new Array(data.length));
          weight = weight.map(() => {return 0;});
       }
-      data = this.add_bias(data);
-      for (var i: number=0; i<data.length; i++) {
-         // calculate vector each other
-         val = this.multiply_vector(weight, data);
-         // error check
-         if (val === false) return false;
-      }
+
+      // calculate vector each other
+      val = this.multiply_vector(weight, this.add_bias(data));
+
+      // error check
+      if (val === false) return false;
+
       return val;
    }
 
    /**
     * Add bias element for input data
     *
-    * @param number[] data: input data
+    * @param string[] data: input data
     *
     * @return number[] data: added data
     */
-   private add_bias(data: number[]): number[]
+   private add_bias(data: any[]): string[]
    {
-      data.push(1);
+      data.push({'count': '1'});
       return data;
    }
 
@@ -54,22 +52,26 @@ export class Discern
     * Multiply vector to each other
     *
     * @param number[] weight: weight vector
-    * @param number[] data  : input data
+    * @param string[] data  : tmp word count
     *
     * @return any ret: result val(number or false)
     */
-   private multiply_vector(weight: number[], data: number[]): any
+   private multiply_vector(weight: number[], data: string[]): any
    {
       // return variable
       var ret: number = 0;
+
       // format check
       if (weight.length !== data.length) return false;
+
       // null check
       if (weight == undefined || data == undefined) return false;
+
       // calculate
-      for (var i: number=0; i<this.DIMENSION; i++) {
-         ret += weight[i] * data[i];
+      for (var key in data) {
+         ret += weight[key]['value'] * Number(data[key]['count']);
       }
+
       return ret;
    }
 }
