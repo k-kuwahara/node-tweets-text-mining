@@ -68,4 +68,4 @@ END
 //
 
 delimiter ;
-CALL insert_default_value(1, 33);
+CALL insert_default_value(1, 34);
