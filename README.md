@@ -9,6 +9,7 @@ __npm packages__
 - xml2js
 - mysql
 - ejs
+- asyncblock
 - typescript
 
 ※if you need to be minify about js files  
