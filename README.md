@@ -9,7 +9,7 @@ __npm packages__
 - xml2js
 - mysql
 - ejs
-- asyncblock
+- async
 - mecab-async
 - typescript
 
