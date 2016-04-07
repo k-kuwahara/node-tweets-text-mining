@@ -1,4 +1,4 @@
-/// <reference path="./node.d.ts" />;
+/// <reference path="./node.d.ts" />
 
 /**
 * Calculate identification function y=w^Tx
@@ -13,12 +13,12 @@ export class Discern
    /**
     * Calculate two vectors
     *
-    * @param number[] weight: weight vector
+    * @param object[] weight: weight vector
     * @param string[] data  : tmp word count
     *
     * @return any val: result calc(number or false)
     */
-   public execute(weight: number[] = [], data: string[] = []): any
+   public execute(weight: any[] = [], data: string[] = []): any
    {
       var val: any = 0;
       if (weight === []) {
@@ -40,7 +40,7 @@ export class Discern
     *
     * @param string[] data: input data
     *
-    * @return number[] data: added data
+    * @return string[] data: added data
     */
    private add_bias(data: any[]): string[]
    {
@@ -51,12 +51,12 @@ export class Discern
    /**
     * Multiply vector to each other
     *
-    * @param number[] weight: weight vector
+    * @param object[] weight: weight vector
     * @param string[] data  : tmp word count
     *
     * @return any ret: result val(number or false)
     */
-   private multiply_vector(weight: number[], data: string[]): any
+   private multiply_vector(weight: any[], data: string[]): any
    {
       // return variable
       var ret: number = 0;

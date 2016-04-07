@@ -1,4 +1,4 @@
-/// <reference path="./node.d.ts" />;
+/// <reference path="./node.d.ts" />
 "use strict";
 /**
 * Calculate identification function y=w^Tx
@@ -14,7 +14,7 @@ var Discern = (function () {
     /**
      * Calculate two vectors
      *
-     * @param number[] weight: weight vector
+     * @param object[] weight: weight vector
      * @param string[] data  : tmp word count
      *
      * @return any val: result calc(number or false)
@@ -39,7 +39,7 @@ var Discern = (function () {
      *
      * @param string[] data: input data
      *
-     * @return number[] data: added data
+     * @return string[] data: added data
      */
     Discern.prototype.add_bias = function (data) {
         data.push({ 'count': '1' });
@@ -48,7 +48,7 @@ var Discern = (function () {
     /**
      * Multiply vector to each other
      *
-     * @param number[] weight: weight vector
+     * @param object[] weight: weight vector
      * @param string[] data  : tmp word count
      *
      * @return any ret: result val(number or false)

@@ -13,7 +13,7 @@ declare module Twitter {
          url     : string,
          params  : any,
          callback: (error: Error, data: any) => any
-      ):TwitterClient;
+      ): TwitterClient;
    }
 }
 
