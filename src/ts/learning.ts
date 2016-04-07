@@ -250,17 +250,17 @@ var get_label = (words: any[], data: string[]): number =>
 var update_weight = (weight: number[], data: number[], label: number): any =>
 {
    var ret: any = new Array(weight.length);
-   
-      // learning
-      for (var i: number = 0; i<weight.length; i++) {
-         ret[i] = weight[i]['value'] + (LC * label * tmp_words[i]['count']);
-      }
 
-      // update weight values in DB
-      connection.query('UPDATE weight_values SET value = ? WHERE weight_id = ?', (ret[i], i), (err, result, fields) : void =>
-      {
-         if (err) ret = false;
-      });
-   
+   // learning
+   for (var i: number = 0; i<weight.length; i++) {
+      ret[i] = weight[i]['weight_num'] + (LC * label * tmp_words[i]['count']);
+   }
+
+   // update weight values in DB
+   connection.query('UPDATE weight_values SET weight_num = ? WHERE weight_id = ?', (ret[i], i), (err, result, fields) : void =>
+   {
+      if (err) ret = false;
+   });
+
    return ret;
 }

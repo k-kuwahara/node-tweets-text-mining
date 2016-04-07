@@ -14,9 +14,9 @@ CREATE TABLE IF NOT EXISTS `word_count`(
 ) DEFAULT CHARSET=utf8 COMMENT='単語';
 
 CREATE TABLE IF NOT EXISTS `weight_values`(
-   `weight_id` SMALLINT(6) AUTO_INCREMENT NOT NULL COMMENt '重みベクトルの添字',
-   `keystr`    VARCHAR(255)               NOT NULL COMMENT '重みベクトルのキー',
-   `value`     FLOAT(18, 17)    DEFAULT 1 NOT NULL COMMENt '重みベクトルの値',
+   `weight_id`  SMALLINT(6) AUTO_INCREMENT NOT NULL COMMENt '重みベクトルの添字',
+   `keystr`     VARCHAR(255)               NOT NULL COMMENT '重みベクトルのキー',
+   `weight_num` DOUBLE(18, 16)   DEFAULT 1 NOT NULL COMMENt '重みベクトルの値',
    PRIMARY KEY (`weight_id`)
 ) DEFAULT CHARSET=utf8 COMMENT='重みベクトルの値';
 
