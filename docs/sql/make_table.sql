@@ -73,4 +73,4 @@ END
 //
 
 delimiter ;
-CALL insert_default_value(1, 38);
+CALL insert_default_value(1, 39);
