@@ -1,33 +1,23 @@
-/// <reference path="../../src/ts/twitter.d.ts" />
 /// <reference path="../../src/ts/mysql.d.ts" />
 /// <reference path="../../src/ts/async.d.ts" />
 /// <reference path="../../src/ts/mecab-async.d.ts" />
 "use strict";
-var Twitter = require('twitter');
 var mysql = require('mysql');
 var async = require('async');
-var config = require('../../src/ts/config');
-var mod_discern = require('../../src/ts/discern');
+var config = require('./config');
+var mod_discern = require('./discern');
 var Mecab = require('mecab-async');
 var LC = 0.8;
-var client;
 var connection;
 var tmp_words;
 var weight;
 var words;
 var mecab = new Mecab();
-/**
- * Create twitter instance
- *
- * @param  void
- * @return void
- */
-client = new Twitter({
-    consumer_key: config.consumer_key,
-    consumer_secret: config.consumer_secret,
-    access_token_key: config.access_token_key,
-    access_token_secret: config.access_token_secret
-});
+var test_datas = [
+    'やばい！！韓国でマクドナルドを見つけたら飲んでみてください！めっちゃ美味しいです！',
+    '【完全決着】「マクドナルドのグランドビッグマック」vs「バーガーキングのビッグキング」本当にウマいのはどっちだ！ http://wp.me/p25BsW-34N0 ',
+    '公式垢のアイパス持ってるなら新人でも雑魚でもないと思うんだけど、ずいぶん酷い、最悪なツイートだな(；・∀・) '
+];
 /**
  * Create mysql connection
  *
@@ -66,36 +56,24 @@ async.waterfall([
             callback(null);
         });
     },
-    // get tweets by TwitterAPI
-    function get_tweets(callback) {
-        var tweets;
-        // search by key word
-        // ※only japanese text
-        client.get('/search/tweets.json', { "q": "マクドナルド", "count": 3 }, function (err, data) {
-            if (err)
-                data = err;
-            tweets = data;
-            callback(null, tweets);
-        });
-    },
     // learning each tweet
-    function learning_tweets(tweets, callback) {
-        if (tweets) {
+    function learning_tweets(callback) {
+        if (test_datas) {
             var loopIndex = 0;
             async.whilst(function () {
-                return loopIndex < tweets.statuses.length;
+                return loopIndex < test_datas.length;
             }, function (done) {
-                loopIndex++;
                 // split part
-                if (tweets.statuses[loopIndex] != undefined) {
+                if (test_datas[loopIndex] != undefined) {
                     async.waterfall([
                         function (callback) {
-                            mecab.wakachi(tweets.statuses[loopIndex].text, function (err, data) {
+                            mecab.wakachi(test_datas[loopIndex], function (err, data) {
                                 var split_words = data;
                                 callback(null, split_words);
                             });
                         },
                         function (split_words, callback) {
+                            loopIndex++;
                             if (split_words.length > 0 && split_words !== [] && split_words[0] !== 'error') {
                                 // update classifier
                                 train(weight, words, split_words);
@@ -118,6 +96,7 @@ async.waterfall([
             });
         }
         callback(null);
+        // process.exit(0);
     },
 ], function (err) {
     if (err)
@@ -236,11 +215,11 @@ var update_weight = function (weight, data, label) {
     // learning
     for (var i = 0; i < weight.length; i++) {
         ret[i] = weight[i]['value'] + (LC * label * tmp_words[i]['count']);
+        // update weight values in DB
+        connection.query('UPDATE weight_values SET value = ? WHERE weight_id = ?', [ret[i], i], function (err, result) {
+            if (err)
+                ret = false;
+        });
     }
-    // update weight values in DB
-    connection.query('UPDATE weight_values SET value = ? WHERE weight_id = ?', (ret[i], i), function (err, result, fields) {
-        if (err)
-            ret = false;
-    });
     return ret;
 };
