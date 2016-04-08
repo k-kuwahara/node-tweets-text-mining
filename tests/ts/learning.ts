@@ -66,13 +66,18 @@ async.waterfall([
    // learning each tweet
    function learning_tweets(callback)
    {
+      var miss_count: number = 0;
+      var cnt:        number = 0;
+
       if (test_datas) {
-         var loopIndex = 0;
+          var loopIndex = 0;
          async.whilst(() =>
          {
             return loopIndex < test_datas.length;
          }, (done: any) =>
          {
+            loopIndex++;
+
             // split part
             if (test_datas[loopIndex] != undefined) {
                async.waterfall([
@@ -80,16 +85,14 @@ async.waterfall([
                   {
                      mecab.wakachi(test_datas[loopIndex], (err, data) =>
                      {
-                        var split_words: string[] = data;
-                        callback(null, split_words);
+                        callback(null, data);
                      });
                   },
                   (split_words, callback) =>
                   {
-                     loopIndex++;
-                     if (split_words.length > 0 && split_words !== [] && split_words[0] !== 'error') {
+                     if (split_words.length > 0 && split_words !== []) {
                         // update classifier
-                        train(weight, words, split_words);
+                        train(split_words);
                         callback(null);
                      } else {
                         callback('train');
@@ -107,24 +110,21 @@ async.waterfall([
          });
       }
       callback(null);
-      // process.exit(0);
    },
 ], (err) =>
 {
    if (err) console.log("Error: async waterfall");
+   else console.log('finish');
 });
-
 
 /**
  * Training
  *
- * @param number[] weight: weight vector
- * @param object[] words:  words count
- * @param string[] data:   split words
+ * @param string[] datas: init datas
  *
  * @return any ret;
  */
-var train = (weight: number[] = [], words: any[] = [], data: string[] = []): any =>
+var train = (data: string[]): any =>
 {
    var cnt: number = 0;
    var val: any    = 0;
@@ -144,7 +144,7 @@ var train = (weight: number[] = [], words: any[] = [], data: string[] = []): any
          (callback) =>
          {
             // get label
-            label = get_label(words, data);
+            label = get_label(data);
             callback(null, label);
          },
          (label, callback) =>
@@ -161,7 +161,7 @@ var train = (weight: number[] = [], words: any[] = [], data: string[] = []): any
          {
             // discern
             if (val * label < 0) {
-               updated_weight = update_weight(weight, words, label);
+               updated_weight = update_weight(label);
                miss_count++;
                if (updated_weight === false) callback('update weight', miss_count);
                else callback(null, miss_count);
@@ -170,15 +170,16 @@ var train = (weight: number[] = [], words: any[] = [], data: string[] = []): any
          },
       ], (err, miss_count) =>
       {
+         console.log(miss_count);
          if (err) {done(err);}
-         else if (cnt > 10) {done('over flow');}
+         else if (cnt > 100) {done('over flow');}
          else if (miss_count !== 0) {done();}
          else {done('finished');}
       });
    }, (err) =>
    {
       if (err === 'finished') {console.log('training finished');}
-      else console.error('Error: ' + err);
+      else if (err !== null) console.error('Error: ' + err);
    });
 }
 
@@ -186,12 +187,11 @@ var train = (weight: number[] = [], words: any[] = [], data: string[] = []): any
 /**
  * get label
  * 
- * @param object[]  words: words count
- * @param string[]  data : learning data
+ * @param string[]  data : split words
  *
  * @return number ret: label
  */
-var get_label = (words: any[], data: string[]): number =>
+var get_label = (data: string[]): number =>
 {
    var ret: number = 0;
 
@@ -216,26 +216,38 @@ var get_label = (words: any[], data: string[]): number =>
 /**
  * Learning part(update weight vector)
  *
- * @param number[]  weight: weight vector
- * @param string[]  data  : split words
  * @param number    label : expect label
  *
  * @return any ret: updated weight vector or false
  */
-var update_weight = (weight: number[], data: number[], label: number): any =>
+var update_weight = (label: number): any =>
 {
-   var ret: any = new Array(weight.length);
-   
-   // learning
-   for (var i: number = 0; i<weight.length; i++) {
-      ret[i] = weight[i]['value'] + (LC * label * tmp_words[i]['count']);
+   var ret: any = weight;
 
-      // update weight values in DB
-      connection.query('UPDATE weight_values SET value = ? WHERE weight_id = ?', [ret[i], i], (err, result) =>
-      {
-         if (err) ret = false;
-      });
-   }
+console.log('update!!');
+
+      // learning
+      for (var i: number = 0; i<weight.length; i++) {
+         ret[i]['weight_num'] = weight[i]['weight_num'] + (LC * label * tmp_words[i]['count']);
+
+         // update weight values in DB
+         connection.query('UPDATE weight_values SET weight_num = ? WHERE weight_id = ?', [ret[i], i+1], (err, result) =>
+         {
+            if (err) ret = false;
+         });
+
+         if (i !== weight.length-1 && tmp_words[i]['count'] !== 0) {
+            // update word count in DB
+            connection.query('UPDATE word_count SET count = count + 1 WHERE id = ?', [i+1], (err, result) =>
+            {
+               if (err) ret = false;
+            });
+         }
+         connection.commit((err) =>
+         {
+            if (err) ret = false;
+         });
+      }
 
    return ret;
 }

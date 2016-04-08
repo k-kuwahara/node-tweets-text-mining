@@ -6,8 +6,8 @@ export = {
    access_token_secret: '',
 
    // mysql infomation
-   host:     '',
-   user:     '',
-   password: '',
-   database: '', 
+   host:     'localhost',
+   user:     'nodejs',
+   password: 'nodejs',
+   database: 'nodetest', 
 }

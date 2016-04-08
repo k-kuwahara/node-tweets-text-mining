@@ -58,25 +58,26 @@ async.waterfall([
     },
     // learning each tweet
     function learning_tweets(callback) {
+        var miss_count = 0;
+        var cnt = 0;
         if (test_datas) {
             var loopIndex = 0;
             async.whilst(function () {
                 return loopIndex < test_datas.length;
             }, function (done) {
+                loopIndex++;
                 // split part
                 if (test_datas[loopIndex] != undefined) {
                     async.waterfall([
                         function (callback) {
                             mecab.wakachi(test_datas[loopIndex], function (err, data) {
-                                var split_words = data;
-                                callback(null, split_words);
+                                callback(null, data);
                             });
                         },
                         function (split_words, callback) {
-                            loopIndex++;
-                            if (split_words.length > 0 && split_words !== [] && split_words[0] !== 'error') {
+                            if (split_words.length > 0 && split_words !== []) {
                                 // update classifier
-                                train(weight, words, split_words);
+                                train(split_words);
                                 callback(null);
                             }
                             else {
@@ -96,25 +97,21 @@ async.waterfall([
             });
         }
         callback(null);
-        // process.exit(0);
     },
 ], function (err) {
     if (err)
         console.log("Error: async waterfall");
+    else
+        console.log('finish');
 });
 /**
  * Training
  *
- * @param number[] weight: weight vector
- * @param object[] words:  words count
- * @param string[] data:   split words
+ * @param string[] datas: init datas
  *
  * @return any ret;
  */
-var train = function (weight, words, data) {
-    if (weight === void 0) { weight = []; }
-    if (words === void 0) { words = []; }
-    if (data === void 0) { data = []; }
+var train = function (data) {
     var cnt = 0;
     var val = 0;
     var updated_weight = weight;
@@ -128,7 +125,7 @@ var train = function (weight, words, data) {
         async.waterfall([
             function (callback) {
                 // get label
-                label = get_label(words, data);
+                label = get_label(data);
                 callback(null, label);
             },
             function (label, callback) {
@@ -145,7 +142,7 @@ var train = function (weight, words, data) {
             function (label, val, callback) {
                 // discern
                 if (val * label < 0) {
-                    updated_weight = update_weight(weight, words, label);
+                    updated_weight = update_weight(label);
                     miss_count++;
                     if (updated_weight === false)
                         callback('update weight', miss_count);
@@ -155,10 +152,11 @@ var train = function (weight, words, data) {
                 callback(null, miss_count);
             },
         ], function (err, miss_count) {
+            console.log(miss_count);
             if (err) {
                 done(err);
             }
-            else if (cnt > 10) {
+            else if (cnt > 100) {
                 done('over flow');
             }
             else if (miss_count !== 0) {
@@ -172,19 +170,18 @@ var train = function (weight, words, data) {
         if (err === 'finished') {
             console.log('training finished');
         }
-        else
+        else if (err !== null)
             console.error('Error: ' + err);
     });
 };
 /**
  * get label
  *
- * @param object[]  words: words count
- * @param string[]  data : learning data
+ * @param string[]  data : split words
  *
  * @return number ret: label
  */
-var get_label = function (words, data) {
+var get_label = function (data) {
     var ret = 0;
     // initialization
     for (var key in tmp_words) {
@@ -204,19 +201,29 @@ var get_label = function (words, data) {
 /**
  * Learning part(update weight vector)
  *
- * @param number[]  weight: weight vector
- * @param string[]  data  : split words
  * @param number    label : expect label
  *
  * @return any ret: updated weight vector or false
  */
-var update_weight = function (weight, data, label) {
-    var ret = new Array(weight.length);
+var update_weight = function (label) {
+    var ret = weight;
+    console.log('update!!');
     // learning
     for (var i = 0; i < weight.length; i++) {
-        ret[i] = weight[i]['value'] + (LC * label * tmp_words[i]['count']);
+        ret[i]['weight_num'] = weight[i]['weight_num'] + (LC * label * tmp_words[i]['count']);
         // update weight values in DB
-        connection.query('UPDATE weight_values SET value = ? WHERE weight_id = ?', [ret[i], i], function (err, result) {
+        connection.query('UPDATE weight_values SET weight_num = ? WHERE weight_id = ?', [ret[i], i + 1], function (err, result) {
+            if (err)
+                ret = false;
+        });
+        if (i !== weight.length - 1 && tmp_words[i]['count'] !== 0) {
+            // update word count in DB
+            connection.query('UPDATE word_count SET count = count + 1 WHERE id = ?', [i + 1], function (err, result) {
+                if (err)
+                    ret = false;
+            });
+        }
+        connection.commit(function (err) {
             if (err)
                 ret = false;
         });

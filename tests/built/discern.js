@@ -25,7 +25,7 @@ var Discern = (function () {
         var val = 0;
         if (weight === []) {
             weight = Array.apply(null, new Array(data.length));
-            weight = weight.map(function () { return 0; });
+            weight = weight.map(function () { return { count: 0 }; });
         }
         // calculate vector each other
         val = this.multiply_vector(weight, this.add_bias(data));
@@ -64,7 +64,7 @@ var Discern = (function () {
             return false;
         // calculate
         for (var key in data) {
-            ret += weight[key]['value'] * Number(data[key]['count']);
+            ret += weight[key]['weight_num'] * Number(data[key]['count']);
         }
         return ret;
     };

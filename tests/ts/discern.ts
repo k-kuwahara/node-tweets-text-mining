@@ -23,7 +23,7 @@ export class Discern
       var val: any = 0;
       if (weight === []) {
          weight = Array.apply(null, new Array(data.length));
-         weight = weight.map(() => {return 0;});
+         weight = weight.map(() => {return {count: 0};});
       }
 
       // calculate vector each other
@@ -69,7 +69,7 @@ export class Discern
 
       // calculate
       for (var key in data) {
-         ret += weight[key]['value'] * Number(data[key]['count']);
+         ret += weight[key]['weight_num'] * Number(data[key]['count']);
       }
 
       return ret;
