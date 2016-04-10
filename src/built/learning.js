@@ -91,12 +91,11 @@ async.waterfall([
                     async.waterfall([
                         function (callback) {
                             mecab.wakachi(tweets.statuses[loopIndex].text, function (err, data) {
-                                var split_words = data;
-                                callback(null, split_words);
+                                callback(null, data);
                             });
                         },
                         function (split_words, callback) {
-                            if (split_words.length > 0 && split_words !== [] && split_words[0] !== 'error') {
+                            if (split_words.length > 0 && split_words !== []) {
                                 // update classifier
                                 train(weight, words, split_words);
                                 callback(null);
@@ -115,13 +114,17 @@ async.waterfall([
             }, function (err) {
                 if (err)
                     callback('error');
+                else
+                    callback(null);
             });
         }
-        callback(null);
+        callback('no test data');
     },
 ], function (err) {
     if (err)
         console.log("Error: async waterfall");
+    else
+        connection.destroy();
 });
 /**
  * Training
@@ -235,10 +238,10 @@ var update_weight = function (weight, data, label) {
     var ret = new Array(weight.length);
     // learning
     for (var i = 0; i < weight.length; i++) {
-        ret[i] = weight[i]['value'] + (LC * label * tmp_words[i]['count']);
+        ret[i] = weight[i]['weight_num'] + (LC * label * tmp_words[i]['count']);
     }
     // update weight values in DB
-    connection.query('UPDATE weight_values SET value = ? WHERE weight_id = ?', (ret[i], i), function (err, result, fields) {
+    connection.query('UPDATE weight_values SET weight_num = ? WHERE weight_id = ?', (ret[i], i), function (err, result, fields) {
         if (err)
             ret = false;
     });

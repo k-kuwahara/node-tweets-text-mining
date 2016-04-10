@@ -107,14 +107,15 @@ async.waterfall([
          }, (err) =>
          {
             if (err) callback('error');
+            else callback(null);
          });
       }
-      callback(null);
+      callback('no test data');
    },
 ], (err) =>
 {
    if (err) console.log("Error: async waterfall");
-   else console.log('finish');
+   else connection.destroy();
 });
 
 /**

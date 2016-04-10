@@ -107,13 +107,12 @@ async.waterfall([
                   {
                      mecab.wakachi(tweets.statuses[loopIndex].text, (err, data) =>
                      {
-                        var split_words: string[] = data;
-                        callback(null, split_words);
+                        callback(null, data);
                      });
                   },
                   (split_words, callback) =>
                   {
-                     if (split_words.length > 0 && split_words !== [] && split_words[0] !== 'error') {
+                     if (split_words.length > 0 && split_words !== []) {
                         // update classifier
                         train(weight, words, split_words);
                         callback(null);
@@ -130,13 +129,15 @@ async.waterfall([
          }, (err) =>
          {
             if (err) callback('error');
+            else callback(null);
          });
       }
-      callback(null);
+      callback('no test data');
    },
 ], (err) =>
 {
    if (err) console.log("Error: async waterfall");
+   else connection.destroy();
 });
 
 
