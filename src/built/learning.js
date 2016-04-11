@@ -149,7 +149,7 @@ var train = function (data) {
         async.waterfall([
             function (callback) {
                 // get label
-                label = get_label(words, data);
+                label = get_label(data);
                 callback(null, label);
             },
             function (label, callback) {
@@ -195,12 +195,11 @@ var train = function (data) {
 /**
  * get label
  *
- * @param object[]  words: words count
  * @param string[]  data : learning data
  *
  * @return number ret: label
  */
-var get_label = function (words, data) {
+var get_label = function (data) {
     var ret = 0;
     // initialization
     for (var key in tmp_words) {

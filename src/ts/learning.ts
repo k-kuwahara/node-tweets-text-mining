@@ -166,7 +166,7 @@ var train = (data: string[] = []): any =>
          (callback) =>
          {
             // get label
-            label = get_label(words, data);
+            label = get_label(data);
             callback(null, label);
          },
          (label, callback) =>
@@ -208,12 +208,11 @@ var train = (data: string[] = []): any =>
 /**
  * get label
  * 
- * @param object[]  words: words count
  * @param string[]  data : learning data
  *
  * @return number ret: label
  */
-var get_label = (words: any[], data: string[]): number =>
+var get_label = (data: string[]): number =>
 {
    var ret: number = 0;
 
