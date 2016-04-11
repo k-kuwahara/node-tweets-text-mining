@@ -98,23 +98,22 @@ async.waterfall([
             return loopIndex < tweets.statuses.length;
          }, (done: any) =>
          {
-            loopIndex++;
-
-            // split part
             if (tweets.statuses[loopIndex] != undefined) {
                async.waterfall([
+                  // split part
                   (callback) =>
                   {
                      mecab.wakachi(tweets.statuses[loopIndex].text, (err, data) =>
                      {
                         callback(null, data);
                      });
+                     loopIndex++;
                   },
                   (split_words, callback) =>
                   {
                      if (split_words.length > 0 && split_words !== []) {
                         // update classifier
-                        train(weight, words, split_words);
+                        train(split_words);
                         callback(null);
                      } else {
                         callback('train');
@@ -125,6 +124,8 @@ async.waterfall([
                   if (err) done('Error: learning miss');
                   else done();
                });
+            } else {
+               done('no test data');
             }
          }, (err) =>
          {
@@ -144,23 +145,18 @@ async.waterfall([
 /**
  * Training
  *
- * @param number[] weight: weight vector
- * @param object[] words:  words count
- * @param string[] data:   split words
+ * @param string[] datas: split words
  *
  * @return any ret;
  */
-var train = (weight: number[] = [], words: any[] = [], data: string[] = []): any =>
+var train = (data: string[] = []): any =>
 {
    var cnt: number = 0;
    var val: any    = 0;
    var updated_weight: any = weight;
    var discern: mod_discern.Discern = new mod_discern.Discern();
 
-   async.whilst(() =>
-   {
-      return true;
-   }, (done: any) =>
+   async.forever((callback: any) =>
    {
       cnt++;
       var miss_count: number = 0;
@@ -196,15 +192,15 @@ var train = (weight: number[] = [], words: any[] = [], data: string[] = []): any
          },
       ], (err, miss_count) =>
       {
-         if (err) {done(err);}
-         else if (cnt > 10) {done('over flow');}
-         else if (miss_count !== 0) {done();}
-         else {done('finished');}
+         if (err) callback(err);
+         else if (cnt > 10000) callback('over flow');
+         else if (miss_count !== 0) callback();
+         else callback('finished');
       });
-   }, (err) =>
+   }, (err: any) =>
    {
-      if (err === 'finished') {console.log('training finished');}
-      else console.error('Error: ' + err);
+      if (err === 'finished') console.log('training finished');
+      else if (err !== null) console.log('Error: ' + err);
    });
 }
 

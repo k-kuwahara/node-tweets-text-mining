@@ -85,19 +85,19 @@ async.waterfall([
             async.whilst(function () {
                 return loopIndex < tweets.statuses.length;
             }, function (done) {
-                loopIndex++;
-                // split part
                 if (tweets.statuses[loopIndex] != undefined) {
                     async.waterfall([
+                        // split part
                         function (callback) {
                             mecab.wakachi(tweets.statuses[loopIndex].text, function (err, data) {
                                 callback(null, data);
                             });
+                            loopIndex++;
                         },
                         function (split_words, callback) {
                             if (split_words.length > 0 && split_words !== []) {
                                 // update classifier
-                                train(weight, words, split_words);
+                                train(split_words);
                                 callback(null);
                             }
                             else {
@@ -110,6 +110,9 @@ async.waterfall([
                         else
                             done();
                     });
+                }
+                else {
+                    done('no test data');
                 }
             }, function (err) {
                 if (err)
@@ -129,23 +132,17 @@ async.waterfall([
 /**
  * Training
  *
- * @param number[] weight: weight vector
- * @param object[] words:  words count
- * @param string[] data:   split words
+ * @param string[] datas: split words
  *
  * @return any ret;
  */
-var train = function (weight, words, data) {
-    if (weight === void 0) { weight = []; }
-    if (words === void 0) { words = []; }
+var train = function (data) {
     if (data === void 0) { data = []; }
     var cnt = 0;
     var val = 0;
     var updated_weight = weight;
     var discern = new mod_discern.Discern();
-    async.whilst(function () {
-        return true;
-    }, function (done) {
+    async.forever(function (callback) {
         cnt++;
         var miss_count = 0;
         var label;
@@ -179,25 +176,20 @@ var train = function (weight, words, data) {
                 callback(null, miss_count);
             },
         ], function (err, miss_count) {
-            if (err) {
-                done(err);
-            }
-            else if (cnt > 10) {
-                done('over flow');
-            }
-            else if (miss_count !== 0) {
-                done();
-            }
-            else {
-                done('finished');
-            }
+            if (err)
+                callback(err);
+            else if (cnt > 10000)
+                callback('over flow');
+            else if (miss_count !== 0)
+                callback();
+            else
+                callback('finished');
         });
     }, function (err) {
-        if (err === 'finished') {
+        if (err === 'finished')
             console.log('training finished');
-        }
-        else
-            console.error('Error: ' + err);
+        else if (err !== null)
+            console.log('Error: ' + err);
     });
 };
 /**

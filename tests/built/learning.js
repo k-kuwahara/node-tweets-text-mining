@@ -14,9 +14,9 @@ var weight;
 var words;
 var mecab = new Mecab();
 var test_datas = [
-    'やばい！！韓国でマクドナルドを見つけたら飲んでみてください！めっちゃ美味しいです！',
-    '【完全決着】「マクドナルドのグランドビッグマック」vs「バーガーキングのビッグキング」本当にウマいのはどっちだ！ http://wp.me/p25BsW-34N0 ',
-    '公式垢のアイパス持ってるなら新人でも雑魚でもないと思うんだけど、ずいぶん酷い、最悪なツイートだな(；・∀・) '
+    "やばい！！韓国でマクドナルドを見つけたら飲んでみてください！めっちゃ美味しいです！",
+    "【完全決着】「マクドナルドのグランドビッグマック」vs「バーガーキングのビッグキング」本当にウマいのはどっちだ！ http://wp.me/p25BsW-34N0 ",
+    "公式垢のアイパス持ってるなら新人でも雑魚でもないと思うんだけど、ずいぶん酷い、最悪なツイートだな(；・∀・) "
 ];
 /**
  * Create mysql connection
@@ -58,20 +58,19 @@ async.waterfall([
     },
     // learning each tweet
     function learning_tweets(callback) {
-        var miss_count = 0;
-        var cnt = 0;
         if (test_datas) {
             var loopIndex = 0;
             async.whilst(function () {
-                return loopIndex <= test_datas.length;
+                return loopIndex < test_datas.length;
             }, function (done) {
-                // split part
                 if (test_datas[loopIndex] != undefined) {
                     async.waterfall([
+                        // split part
                         function (callback) {
                             mecab.wakachi(test_datas[loopIndex], function (err, data) {
                                 callback(null, data);
                             });
+                            loopIndex++;
                         },
                         function (split_words, callback) {
                             if (split_words.length > 0 && split_words !== []) {
@@ -84,12 +83,14 @@ async.waterfall([
                             }
                         },
                     ], function (err) {
-                        if (err)
+                        if (err !== null)
                             done('Error: learning miss');
                         else
                             done();
                     });
-                    loopIndex++;
+                }
+                else {
+                    done('no test data');
                 }
             }, function (err) {
                 if (err)
@@ -154,18 +155,14 @@ var train = function (data) {
                 callback(null, miss_count);
             },
         ], function (err, miss_count) {
-            if (err) {
+            if (err)
                 callback(err);
-            }
-            else if (cnt > 100) {
+            else if (cnt > 10000)
                 callback('over flow');
-            }
-            else if (miss_count !== 0) {
+            else if (miss_count !== 0)
                 callback(null);
-            }
-            else {
+            else
                 callback('finished');
-            }
         });
     }, function (err) {
         if (err === 'finished')
@@ -207,7 +204,6 @@ var get_label = function (data) {
  */
 var update_weight = function (label) {
     var ret = weight;
-    console.log('update!!');
     // learning
     for (var i = 0; i < weight.length; i++) {
         ret[i]['weight_num'] = weight[i]['weight_num'] + (LC * label * tmp_words[i]['count']);
@@ -223,10 +219,6 @@ var update_weight = function (label) {
                     ret = false;
             });
         }
-        connection.commit(function (err) {
-            if (err)
-                ret = false;
-        });
     }
     return ret;
 };

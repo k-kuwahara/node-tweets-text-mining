@@ -15,11 +15,10 @@ var weight    : any;
 var words     : any;
 var mecab     : Mecab.MecabAPI = new Mecab();
 var test_datas: string[] = [
-   'やばい！！韓国でマクドナルドを見つけたら飲んでみてください！めっちゃ美味しいです！',
-   '【完全決着】「マクドナルドのグランドビッグマック」vs「バーガーキングのビッグキング」本当にウマいのはどっちだ！ http://wp.me/p25BsW-34N0 ',
-   '公式垢のアイパス持ってるなら新人でも雑魚でもないと思うんだけど、ずいぶん酷い、最悪なツイートだな(；・∀・) '
+   "やばい！！韓国でマクドナルドを見つけたら飲んでみてください！めっちゃ美味しいです！",
+   "【完全決着】「マクドナルドのグランドビッグマック」vs「バーガーキングのビッグキング」本当にウマいのはどっちだ！ http://wp.me/p25BsW-34N0 ",
+   "公式垢のアイパス持ってるなら新人でも雑魚でもないと思うんだけど、ずいぶん酷い、最悪なツイートだな(；・∀・) "
 ];
-
 /**
  * Create mysql connection
  *
@@ -66,25 +65,23 @@ async.waterfall([
    // learning each tweet
    function learning_tweets(callback)
    {
-      var miss_count: number = 0;
-      var cnt:        number = 0;
-
       if (test_datas) {
          var loopIndex = 0;
          async.whilst(() =>
          {
-            return loopIndex <= test_datas.length;
+            return loopIndex < test_datas.length;
          }, (done: any) =>
          {
-            // split part
             if (test_datas[loopIndex] != undefined) {
                async.waterfall([
+                  // split part
                   (callback) =>
                   {
                      mecab.wakachi(test_datas[loopIndex], (err, data) =>
                      {
                         callback(null, data);
                      });
+                     loopIndex++;
                   },
                   (split_words, callback) =>
                   {
@@ -98,10 +95,11 @@ async.waterfall([
                   },
                ], (err) =>
                {
-                  if (err) done('Error: learning miss');
+                  if (err !== null) done('Error: learning miss');
                   else done();
                });
-               loopIndex++;
+            } else {
+               done('no test data');
             }
          }, (err) =>
          {
@@ -168,10 +166,10 @@ var train = (data: string[]): any =>
          },
       ], (err, miss_count) =>
       {
-         if (err) {callback(err);}
-         else if (cnt > 100) {callback('over flow');}
-         else if (miss_count !== 0) {callback(null);}
-         else {callback('finished');}
+         if (err) callback(err);
+         else if (cnt > 10000) callback('over flow');
+         else if (miss_count !== 0) callback(null);
+         else callback('finished');
       });
    }, (err: any) =>
    {
@@ -220,31 +218,24 @@ var get_label = (data: string[]): number =>
 var update_weight = (label: number): any =>
 {
    var ret: any = weight;
+   // learning
+   for (var i: number = 0; i<weight.length; i++) {
+      ret[i]['weight_num'] = weight[i]['weight_num'] + (LC * label * tmp_words[i]['count']);
 
-console.log('update!!');
+      // update weight values in DB
+      connection.query('UPDATE weight_values SET weight_num = ? WHERE weight_id = ?', [ret[i], i+1], (err, result) =>
+      {
+         if (err) ret = false;
+      });
 
-      // learning
-      for (var i: number = 0; i<weight.length; i++) {
-         ret[i]['weight_num'] = weight[i]['weight_num'] + (LC * label * tmp_words[i]['count']);
-
-         // update weight values in DB
-         connection.query('UPDATE weight_values SET weight_num = ? WHERE weight_id = ?', [ret[i], i+1], (err, result) =>
-         {
-            if (err) ret = false;
-         });
-
-         if (i !== weight.length-1 && tmp_words[i]['count'] !== 0) {
-            // update word count in DB
-            connection.query('UPDATE word_count SET count = count + 1 WHERE id = ?', [i+1], (err, result) =>
-            {
-               if (err) ret = false;
-            });
-         }
-         connection.commit((err) =>
+      if (i !== weight.length-1 && tmp_words[i]['count'] !== 0) {
+         // update word count in DB
+         connection.query('UPDATE word_count SET count = count + 1 WHERE id = ?', [i+1], (err, result) =>
          {
             if (err) ret = false;
          });
       }
+   }
 
    return ret;
 }
