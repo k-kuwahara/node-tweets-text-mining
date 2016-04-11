@@ -70,14 +70,12 @@ async.waterfall([
       var cnt:        number = 0;
 
       if (test_datas) {
-          var loopIndex = 0;
+         var loopIndex = 0;
          async.whilst(() =>
          {
-            return loopIndex < test_datas.length;
+            return loopIndex <= test_datas.length;
          }, (done: any) =>
          {
-            loopIndex++;
-
             // split part
             if (test_datas[loopIndex] != undefined) {
                async.waterfall([
@@ -103,14 +101,16 @@ async.waterfall([
                   if (err) done('Error: learning miss');
                   else done();
                });
+               loopIndex++;
             }
          }, (err) =>
          {
             if (err) callback('error');
             else callback(null);
          });
+      } else {
+         callback('no test data');
       }
-      callback('no test data');
    },
 ], (err) =>
 {
@@ -132,10 +132,7 @@ var train = (data: string[]): any =>
    var updated_weight: any = weight;
    var discern: mod_discern.Discern = new mod_discern.Discern();
 
-   async.whilst(() =>
-   {
-      return true;
-   }, (done: any) =>
+   async.forever ((callback: any) =>
    {
       cnt++;
       var miss_count: number = 0;
@@ -171,13 +168,12 @@ var train = (data: string[]): any =>
          },
       ], (err, miss_count) =>
       {
-         console.log(miss_count);
-         if (err) {done(err);}
-         else if (cnt > 100) {done('over flow');}
-         else if (miss_count !== 0) {done();}
-         else {done('finished');}
+         if (err) {callback(err);}
+         else if (cnt > 100) {callback('over flow');}
+         else if (miss_count !== 0) {callback(null);}
+         else {callback('finished');}
       });
-   }, (err) =>
+   }, (err: any) =>
    {
       if (err === 'finished') {console.log('training finished');}
       else if (err !== null) console.error('Error: ' + err);

@@ -63,9 +63,8 @@ async.waterfall([
         if (test_datas) {
             var loopIndex = 0;
             async.whilst(function () {
-                return loopIndex < test_datas.length;
+                return loopIndex <= test_datas.length;
             }, function (done) {
-                loopIndex++;
                 // split part
                 if (test_datas[loopIndex] != undefined) {
                     async.waterfall([
@@ -90,6 +89,7 @@ async.waterfall([
                         else
                             done();
                     });
+                    loopIndex++;
                 }
             }, function (err) {
                 if (err)
@@ -98,7 +98,9 @@ async.waterfall([
                     callback(null);
             });
         }
-        callback('no test data');
+        else {
+            callback('no test data');
+        }
     },
 ], function (err) {
     if (err)
@@ -118,9 +120,7 @@ var train = function (data) {
     var val = 0;
     var updated_weight = weight;
     var discern = new mod_discern.Discern();
-    async.whilst(function () {
-        return true;
-    }, function (done) {
+    async.forever(function (callback) {
         cnt++;
         var miss_count = 0;
         var label;
@@ -154,18 +154,17 @@ var train = function (data) {
                 callback(null, miss_count);
             },
         ], function (err, miss_count) {
-            console.log(miss_count);
             if (err) {
-                done(err);
+                callback(err);
             }
             else if (cnt > 100) {
-                done('over flow');
+                callback('over flow');
             }
             else if (miss_count !== 0) {
-                done();
+                callback(null);
             }
             else {
-                done('finished');
+                callback('finished');
             }
         });
     }, function (err) {
