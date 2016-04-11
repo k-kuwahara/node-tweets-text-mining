@@ -15,10 +15,10 @@ gulp.task('watch', function() {
 });
 
 gulp.task('minify', function() {
-   gulp.src('./src/*.js')
+   gulp.src('./src/built/*.js')
       .pipe(uglify())
       .pipe(rename({suffix: '.min'}))
-      .pipe(gulp.dest('./src/min'));
+      .pipe(gulp.dest('./src/built/'));
 });
 
 gulp.task('default', ['typescript', 'minify']);
