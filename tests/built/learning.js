@@ -168,9 +168,8 @@ var train = function (data) {
             }
         });
     }, function (err) {
-        if (err === 'finished') {
+        if (err === 'finished')
             console.log('training finished');
-        }
         else if (err !== null)
             console.error('Error: ' + err);
     });

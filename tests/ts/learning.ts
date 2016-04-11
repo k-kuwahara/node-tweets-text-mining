@@ -175,7 +175,7 @@ var train = (data: string[]): any =>
       });
    }, (err: any) =>
    {
-      if (err === 'finished') {console.log('training finished');}
+      if (err === 'finished') console.log('training finished');
       else if (err !== null) console.error('Error: ' + err);
    });
 }
