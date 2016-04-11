@@ -5,9 +5,6 @@ export = {
    access_token_key: '',
    access_token_secret: '',
 
-   // yahoo app id
-   yahoo_id: '',
-
    // mysql infomation
    host: '',
    user: '',
