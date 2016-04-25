@@ -1,4 +1,4 @@
-/// <reference path="../ts/node.d.ts" />
+/// <reference path="../ts/definitely/node.d.ts" />
 "use strict";
 var Simple_perceptron = (function () {
     /**

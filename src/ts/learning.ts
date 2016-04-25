@@ -1,7 +1,7 @@
-/// <reference path="../ts/twitter.d.ts" />
-/// <reference path="../ts/mysql.d.ts" />
-/// <reference path="../ts/async.d.ts" />
-/// <reference path="../ts/mecab-async.d.ts" />
+/// <reference path="../ts/definitely/twitter.d.ts" />
+/// <reference path="../ts/definitely/mysql.d.ts" />
+/// <reference path="../ts/definitely/async.d.ts" />
+/// <reference path="../ts/definitely/mecab-async.d.ts" />
 
 import Twitter     = require('twitter');
 import mysql       = require('mysql');

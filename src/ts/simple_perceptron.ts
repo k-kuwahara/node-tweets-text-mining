@@ -1,4 +1,4 @@
-/// <reference path="../ts/node.d.ts" />
+/// <reference path="../ts/definitely/node.d.ts" />
 
 import query   = require('./query');
 import discern = require('./discern');
