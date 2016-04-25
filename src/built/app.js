@@ -8,9 +8,11 @@ var qs = require('querystring');
 var config = require('./config');
 var server = http.createServer();
 var template = fs.readFileSync(__dirname + '/../views/app.ejs', 'utf-8');
-function renderForm(post, res) {
+function renderForm(post, method, res) {
     var data = ejs.render(template, {
-        result: post
+        post: post,
+        result: '',
+        method: method
     });
     res.writeHead(200, { 'Content-type': 'text/html' });
     res.end(data);
@@ -28,7 +30,19 @@ function get_contents(req, res) {
                     res.write('not found!');
                     return res.end();
                 }
-                renderForm('', res);
+                if (req.method === 'POST') {
+                    req.data = '';
+                    req.on('readable', function () {
+                        req.data += req.read();
+                    });
+                    req.on('end', function () {
+                        var query = qs.parse(req.data);
+                        renderForm(query.name, 'POST', res);
+                    });
+                }
+                else {
+                    renderForm('', 'GET', res);
+                }
             });
             break;
         case '/css/bootstrap.min.css':
@@ -49,15 +63,5 @@ function get_contents(req, res) {
                 res.end(data, 'utf-8');
             });
             break;
-    }
-    if (req.method === 'POST') {
-        req.data = '';
-        req.on('readable', function () {
-            req.data += req.read();
-        });
-        req.on('end', function () {
-            var query = qs.parse(req.data);
-            renderForm(query.name, res);
-        });
     }
 }

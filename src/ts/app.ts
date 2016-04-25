@@ -10,10 +10,13 @@ import config = require('./config');
 var server: http.Server = http.createServer();
 var template: any       = fs.readFileSync(__dirname + '/../views/app.ejs', 'utf-8');
 
-function renderForm(post, res) {
+function renderForm(post: string, method: string, res: any) {
    var data: any = ejs.render(template, {
-      result: post,
+      post  : post,
+      result: '',
+      method: method,
    });
+
    res.writeHead(200, {'Content-type': 'text/html'});
    res.end(data);
 }
@@ -34,7 +37,22 @@ function get_contents(req, res)
                res.write('not found!');
                return res.end();
             }
-            renderForm('', res);
+
+            if (req.method === 'POST') {
+               req.data = '';
+               req.on('readable', () =>
+               {
+                  req.data += req.read();
+               });
+               req.on('end', () =>
+               {
+                  var query = qs.parse(req.data);
+                  renderForm(query.name, 'POST', res);
+               });
+            } else {
+               renderForm('', 'GET', res);
+            }
+
          });
          break;
 
@@ -61,18 +79,5 @@ function get_contents(req, res)
             res.end(data, 'utf-8');
          });
          break;
-    }
-
-    if (req.method === 'POST') {
-       req.data = '';
-       req.on('readable', () =>
-       {
-          req.data += req.read();
-       });
-       req.on('end', () =>
-       {
-          var query = qs.parse(req.data);
-          renderForm(query.name, res);
-       });
     }
 }
