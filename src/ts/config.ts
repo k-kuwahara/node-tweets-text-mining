@@ -1,6 +1,6 @@
 export = {
    // port
-   port: '1337',
+   port: 1337,
    // twitter developer infomatiln
    consumer_key: '',
    consumer_secret: '',
