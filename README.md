@@ -2,7 +2,7 @@
 
 ## Environment
 __Node__
-- over v5.4.0
+- >= 5.4.0
 
 __npm packages__
 - twitter
@@ -31,9 +31,9 @@ $ npm install --no-bin-link
 $ node learn
 ```
 
-__Server boot__
+__App boot__
 ```cmd
-$ node server
+$ node app
 ```
 
 ## LICENSE
