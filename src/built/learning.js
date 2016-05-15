@@ -64,7 +64,7 @@ async.waterfall([
             if (err)
                 result = err;
             words = result;
-            tmp_words = words;
+            tmp_words = result;
             callback(null);
         });
     },

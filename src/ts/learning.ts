@@ -70,8 +70,8 @@ async.waterfall([
       connection.query('SELECT * FROM word_count', (err, result, fields) : void =>
       {
          if (err) result = err;
-         words = result;
-         tmp_words = words;
+         words     = result;
+         tmp_words = result;
          callback(null);
       });
    },
@@ -163,7 +163,7 @@ var train = (data: string[] = []): any =>
       cnt++;
       var miss_count: number = 0;
       var label: number;
-      
+
       async.waterfall([
          (callback) =>
          {
@@ -175,6 +175,7 @@ var train = (data: string[] = []): any =>
          {
             // discern
             if (tmp_words[tmp_words.length-1].id === undefined) tmp_words.pop();
+
             val = discern.execute(weight, tmp_words);
             fs.writeFile('weight.json', JSON.stringify(weight, null, ''));
 
