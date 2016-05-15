@@ -10,11 +10,10 @@ import config = require('./config');
 var server: http.Server = http.createServer();
 var template: any       = fs.readFileSync(__dirname + '/../views/app.ejs', 'utf-8');
 
-function renderForm(post: string, method: string, res: any) {
+function renderForm(post: string, result: string, res: any) {
    var data: any = ejs.render(template, {
       post  : post,
       result: '',
-      method: method,
    });
 
    res.writeHead(200, {'Content-type': 'text/html'});
@@ -47,10 +46,10 @@ function get_contents(req, res)
                req.on('end', () =>
                {
                   var query = qs.parse(req.data);
-                  renderForm(query.name, 'POST', res);
+                  renderForm(query.document, '', res);
                });
             } else {
-               renderForm('', 'GET', res);
+               renderForm('', '', res);
             }
 
          });

@@ -8,11 +8,10 @@ var qs = require('querystring');
 var config = require('./config');
 var server = http.createServer();
 var template = fs.readFileSync(__dirname + '/../views/app.ejs', 'utf-8');
-function renderForm(post, method, res) {
+function renderForm(post, result, res) {
     var data = ejs.render(template, {
         post: post,
-        result: '',
-        method: method
+        result: ''
     });
     res.writeHead(200, { 'Content-type': 'text/html' });
     res.end(data);
@@ -37,11 +36,11 @@ function get_contents(req, res) {
                     });
                     req.on('end', function () {
                         var query = qs.parse(req.data);
-                        renderForm(query.name, 'POST', res);
+                        renderForm(query.document, '', res);
                     });
                 }
                 else {
-                    renderForm('', 'GET', res);
+                    renderForm('', '', res);
                 }
             });
             break;
