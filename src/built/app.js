@@ -17,7 +17,7 @@ function renderForm(post, result, res) {
     res.end(data);
 }
 server.on('request', get_contents);
-server.listen(config.port, config.host);
+server.listen(config.port, config.server);
 console.log('server listening ... ');
 function get_contents(req, res) {
     var file_path = __dirname + '/../views' + req.url;

@@ -1,8 +1,10 @@
+/// <reference path="../ts/definitely/node.d.ts" />
 /// <reference path="../ts/definitely/twitter.d.ts" />
 /// <reference path="../ts/definitely/mysql.d.ts" />
 /// <reference path="../ts/definitely/async.d.ts" />
 /// <reference path="../ts/definitely/mecab-async.d.ts" />
 "use strict";
+var fs = require('fs');
 var Twitter = require('twitter');
 var mysql = require('mysql');
 var async = require('async');
@@ -157,6 +159,7 @@ var train = function (data) {
                 if (tmp_words[tmp_words.length - 1].id === undefined)
                     tmp_words.pop();
                 val = discern.execute(weight, tmp_words);
+                fs.writeFile('weight.json', JSON.stringify(weight, null, ''));
                 // error check
                 if (val === false)
                     callback('get val', label);
@@ -167,6 +170,7 @@ var train = function (data) {
                 // discern
                 if (val * label < 0) {
                     updated_weight = update_weight(weight, words, label);
+                    fs.writeFile('weight.json', JSON.stringify(updated_weight, null, ''));
                     miss_count++;
                     if (updated_weight === false)
                         callback('update weight', miss_count);

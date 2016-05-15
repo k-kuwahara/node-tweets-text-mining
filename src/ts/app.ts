@@ -21,7 +21,7 @@ function renderForm(post: string, result: string, res: any) {
 }
 
 server.on('request', get_contents);
-server.listen(config.port, config.host);
+server.listen(config.port, config.server);
 console.log('server listening ... ');
 
 function get_contents(req, res)
