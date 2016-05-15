@@ -28,11 +28,13 @@ Please show [docs](https://github.com/k-kuwahara/node-tweets-text-mining/blob/ma
 __Learning__
 ```cmd
 $ npm install --no-bin-link
+$ cd src/built/
 $ node learn
 ```
 
 __App boot__
 ```cmd
+$ cd src/built/
 $ node app
 ```
 
