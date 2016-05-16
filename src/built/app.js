@@ -8,8 +8,9 @@ var qs = require('querystring');
 var config = require('./config');
 var server = http.createServer();
 var template = fs.readFileSync(__dirname + '/../views/app.ejs', 'utf-8');
-function renderForm(post, result, res) {
+function renderForm(post, result, method, res) {
     var data = ejs.render(template, {
+        method: method,
         post: post,
         result: ''
     });
@@ -36,11 +37,11 @@ function get_contents(req, res) {
                     });
                     req.on('end', function () {
                         var query = qs.parse(req.data);
-                        renderForm(query.document, '', res);
+                        renderForm(query.document, '', 'POST', res);
                     });
                 }
                 else {
-                    renderForm('', '', res);
+                    renderForm('', '', 'GET', res);
                 }
             });
             break;
