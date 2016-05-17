@@ -2,7 +2,7 @@
 
 ## Environment
 __Node__
-- >= 5.4.0
+- over v6.1.0
 
 __npm packages__
 - twitter
@@ -35,7 +35,7 @@ $ node learn
 __App boot__
 ```cmd
 $ cd src/built/
-$ node app
+$ node app "type your text"
 ```
 
 ## LICENSE
