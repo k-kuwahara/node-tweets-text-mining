@@ -8,7 +8,6 @@ __npm packages__
 - twitter
 - xml2js
 - mysql
-- ejs
 - async
 - mecab-async
 - typescript
