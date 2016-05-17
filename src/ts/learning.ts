@@ -141,7 +141,6 @@ async.waterfall([
 ], (err) =>
 {
    if (err) console.log("Error: async waterfall");
-   else connection.destroy();
 });
 
 

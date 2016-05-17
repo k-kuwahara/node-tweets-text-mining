@@ -130,8 +130,6 @@ async.waterfall([
 ], function (err) {
     if (err)
         console.log("Error: async waterfall");
-    else
-        connection.destroy();
 });
 /**
  * Training
