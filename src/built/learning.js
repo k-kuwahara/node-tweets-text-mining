@@ -107,7 +107,7 @@ async.waterfall([
                             }
                         },
                     ], function (err) {
-                        if (err)
+                        if (err != null)
                             done('Error: learning miss');
                         else
                             done();
@@ -123,7 +123,9 @@ async.waterfall([
                     callback(null);
             });
         }
-        callback('no test data');
+        else {
+            callback('no test data');
+        }
     },
 ], function (err) {
     if (err)
