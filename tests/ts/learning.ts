@@ -1,6 +1,6 @@
-/// <reference path="../../src/ts/mysql.d.ts" />
-/// <reference path="../../src/ts/async.d.ts" />
-/// <reference path="../../src/ts/mecab-async.d.ts" />
+/// <reference path="../../src/ts/definitely/mysql.d.ts" />
+/// <reference path="../../src/ts/definitely/async.d.ts" />
+/// <reference path="../../src/ts/definitely/mecab-async.d.ts" />
 
 import mysql       = require('mysql');
 import async       = require('async');
@@ -113,7 +113,6 @@ async.waterfall([
 ], (err) =>
 {
    if (err) console.log("Error: async waterfall");
-   else connection.destroy();
 });
 
 /**

@@ -1,4 +1,4 @@
-/// <reference path="../../src/ts/node.d.ts" />
+/// <reference path="../../src/ts/definitely/node.d.ts" />
 "use strict";
 /**
 * Calculate identification function y=w^Tx

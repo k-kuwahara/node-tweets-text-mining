@@ -1,6 +1,6 @@
-/// <reference path="../../src/ts/mysql.d.ts" />
-/// <reference path="../../src/ts/async.d.ts" />
-/// <reference path="../../src/ts/mecab-async.d.ts" />
+/// <reference path="../../src/ts/definitely/mysql.d.ts" />
+/// <reference path="../../src/ts/definitely/async.d.ts" />
+/// <reference path="../../src/ts/definitely/mecab-async.d.ts" />
 "use strict";
 var mysql = require('mysql');
 var async = require('async');
@@ -106,8 +106,6 @@ async.waterfall([
 ], function (err) {
     if (err)
         console.log("Error: async waterfall");
-    else
-        connection.destroy();
 });
 /**
  * Training
