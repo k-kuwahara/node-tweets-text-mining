@@ -6,7 +6,6 @@ __Node__
 
 __npm packages__
 - twitter
-- xml2js
 - mysql
 - async
 - mecab-async
