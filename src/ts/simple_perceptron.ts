@@ -1,6 +1,5 @@
 /// <reference path="../ts/definitely/node.d.ts" />
 
-import query   = require('./query');
 import discern = require('./discern');
 
 export class Simple_perceptron

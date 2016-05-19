@@ -1,67 +1,76 @@
 /// <reference path="../ts/definitely/node.d.ts" />
-/// <reference path="../ts/definitely/ejs.d.ts" />
+/// <reference path="../ts/definitely/mysql.d.ts" />
+/// <reference path="../ts/definitely/async.d.ts" />
+/// <reference path="../ts/definitely/mecab-async.d.ts" />
 "use strict";
-var http = require('http');
-var fs = require('fs');
-var ejs = require('ejs');
-var qs = require('querystring');
 var config = require('./config');
-var server = http.createServer();
-var template = fs.readFileSync(__dirname + '/../views/app.ejs', 'utf-8');
-function renderForm(post, result, method, res) {
-    var data = ejs.render(template, {
-        method: method,
-        post: post,
-        result: ''
-    });
-    res.writeHead(200, { 'Content-type': 'text/html' });
-    res.end(data);
-}
-server.on('request', get_contents);
-server.listen(config.port, config.server);
-console.log('server listening ... ');
-function get_contents(req, res) {
-    var file_path = __dirname + '/../views' + req.url;
-    switch (req.url) {
-        case '/':
-            fs.readFile(__dirname + '/../views/app.ejs', 'utf-8', function (err, data) {
-                if (err) {
-                    res.writeHead(404, { 'Content-type': 'text/plain' });
-                    res.write('not found!');
-                    return res.end();
-                }
-                if (req.method === 'POST') {
-                    req.data = '';
-                    req.on('readable', function () {
-                        req.data += req.read();
-                    });
-                    req.on('end', function () {
-                        var query = qs.parse(req.data);
-                        renderForm(query.document, '', 'POST', res);
-                    });
-                }
-                else {
-                    renderForm('', '', 'GET', res);
-                }
-            });
-            break;
-        case '/css/bootstrap.min.css':
-            fs.readFile(file_path, 'utf-8', function (err, data) {
-                res.writeHead(200, { 'Content-Type': 'text/css' });
-                res.end(data, 'utf-8');
-            });
-            break;
-        case '/js/jquery.js':
-            fs.readFile(file_path, 'utf-8', function (err, data) {
-                res.writeHead(200, { 'Content-Type': 'text/javascript' });
-                res.end(data, 'utf-8');
-            });
-            break;
-        case '/js/bootstrap.min.js':
-            fs.readFile(file_path, 'utf-8', function (err, data) {
-                res.writeHead(200, { 'Content-Type': 'text/javascript' });
-                res.end(data, 'utf-8');
-            });
-            break;
+var mysql = require('mysql');
+var async = require('async');
+var Mecab = require('mecab-async');
+var connection;
+var weight;
+var mecab = new Mecab();
+var query = process.argv[2];
+var result;
+/**
+ * Create mysql connection
+ *
+ * @param  void
+ * @return void
+ */
+connection = mysql.createConnection({
+    host: config.host,
+    user: config.user,
+    password: config.password,
+    database: config.database
+});
+/**
+ * classify part
+ *
+ * @param  void
+ * @return any
+ */
+async.waterfall([
+    // get weight
+    function (done) {
+        var sql = 'select wc.*, wv.weight_num  from word_count as wc left join weight_values as wv on wc.id = wv.weight_id';
+        connection.query(sql, function (err, result, fields) {
+            if (err)
+                result = err;
+            weight = result;
+            done(null, weight);
+        });
+    },
+    // split text
+    function (weight, done) {
+        mecab.wakachi(query, function (err, data) {
+            if (err) {
+                done(err);
+            }
+            else {
+                result = discern(weight, data);
+                done(null);
+            }
+        });
     }
+], function (err, values) {
+    if (err)
+        console.error("Error: async waterfall");
+    else
+        console.log("classify!!");
+});
+/**
+ * discern part
+ *
+ * @param weight: string[] weight vector
+ * @param words : string[] split text
+ * @return result: number or false
+ */
+function discern(weight, words) {
+    var result = 0;
+    words.forEach(function (word, index) {
+        weight.forEach(function (elem, key) {
+            console.log(elem);
+        });
+    });
 }
