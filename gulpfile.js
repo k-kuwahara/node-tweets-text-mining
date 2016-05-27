@@ -1,7 +1,13 @@
 var gulp   = require('gulp'),
     tsc    = require('gulp-typescript'),
     uglify = require('gulp-uglify'),
-    rename = require('gulp-rename');
+    rename = require('gulp-rename'),
+    jshint = require('gulp-jshint');
+
+var src = {
+   'ts': './src/ts/*.ts',
+   'js': './src/built/*.js'
+}
 
 gulp.task('typescript', function() {
    var tsconfig = require('./tsconfig.json');
@@ -10,8 +16,15 @@ gulp.task('typescript', function() {
       .pipe(gulp.dest('./src/built/'))
 });
 
+gulp.task('jshint', function() {
+   return gulp.src(src.js)
+   .pipe(jshint())
+   .pipe(jshint.reporter());
+});
+
 gulp.task('watch', function() {
-   gulp.watch('./src/ts/*.ts', ['typescript']);
+   gulp.watch(src.ts, ['typescript']);
+   gulp.watch(src.ts, ['jshint']);
 });
 
 gulp.task('minify', function() {
