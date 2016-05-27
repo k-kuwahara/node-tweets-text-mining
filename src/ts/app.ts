@@ -82,7 +82,7 @@ function discern(weight: string[], words: string[])
    {
       weight.forEach((elem: any, key: number) =>
       {
-         if (word === elem.word) result += parseInt(elem.weight_num);
+         if (word === elem.word) result += parseInt(elem.weight_num)* parseInt(elem.label);
       });
    });
 

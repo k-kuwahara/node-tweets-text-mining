@@ -75,7 +75,7 @@ function discern(weight, words) {
     words.forEach(function (word, index) {
         weight.forEach(function (elem, key) {
             if (word === elem.word)
-                result += parseInt(elem.weight_num);
+                result += parseInt(elem.weight_num) * parseInt(elem.label);
         });
     });
     return result;

@@ -15,7 +15,11 @@ var weight        : any;
 var mecab         : Mecab.MecabAPI = new Mecab();
 var result        : any;
 var test_sentences: string = "やばい！！韓国でマクドナルドを見つけたら飲んでみてください！めっちゃ美味しいです！";
+
+// another positive sentence
 // "【完全決着】「マクドナルドのグランドビッグマック」vs「バーガーキングのビッグキング」本当にウマいのはどっちだ！ http://wp.me/p25BsW-34N0 ";
+
+// negative sentence
 // "公式垢のアイパス持ってるなら新人でも雑魚でもないと思うんだけど、ずいぶん酷い、最悪なツイートだな(；・∀・) ";
 
 /**
@@ -84,7 +88,7 @@ function discern(weight: string[], words: string[])
    {
       weight.forEach((elem: any, key: number) =>
       {
-         if (word === elem.word) result += parseInt(elem.weight_num);
+         if (word === elem.word) result += parseInt(elem.weight_num) * parseInt(elem.label);
       });
    });
 
