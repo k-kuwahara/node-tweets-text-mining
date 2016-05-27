@@ -18,6 +18,9 @@ __gulp packages__
 - gulp-uglify
 - gulp-rename
 
+※if you need check javascript grammer  
+- jshint
+- gulp-jshint
 
 ## How to use
 Please show [docs](https://github.com/k-kuwahara/node-tweets-text-mining/blob/master/docs/).
