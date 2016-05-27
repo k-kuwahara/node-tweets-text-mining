@@ -1,7 +1,7 @@
-/// <reference path="../ts/definitely/node.d.ts" />
-/// <reference path="../ts/definitely/mysql.d.ts" />
-/// <reference path="../ts/definitely/async.d.ts" />
-/// <reference path="../ts/definitely/mecab-async.d.ts" />
+/// <reference path="../../src/ts/definitely/node.d.ts" />
+/// <reference path="../../src/ts/definitely/mysql.d.ts" />
+/// <reference path="../../src/ts/definitely/async.d.ts" />
+/// <reference path="../../src/ts/definitely/mecab-async.d.ts" />
 
 import fs     = require('fs');
 import qs     = require('querystring');
@@ -10,11 +10,13 @@ import mysql  = require('mysql');
 import async  = require('async');
 import Mecab  = require('mecab-async');
 
-var connection: any;
-var weight    : any;
-var mecab     : Mecab.MecabAPI = new Mecab();
-var query     : string = process.argv[2];
-var result    : any;
+var connection    : any;
+var weight        : any;
+var mecab         : Mecab.MecabAPI = new Mecab();
+var result        : any;
+var test_sentences: string = "やばい！！韓国でマクドナルドを見つけたら飲んでみてください！めっちゃ美味しいです！";
+// "【完全決着】「マクドナルドのグランドビッグマック」vs「バーガーキングのビッグキング」本当にウマいのはどっちだ！ http://wp.me/p25BsW-34N0 ";
+// "公式垢のアイパス持ってるなら新人でも雑魚でもないと思うんだけど、ずいぶん酷い、最悪なツイートだな(；・∀・) ";
 
 /**
  * Create mysql connection
@@ -51,13 +53,13 @@ async.waterfall([
    // split text
    (weight, done) =>
    {
-      mecab.wakachi(query, (err, data) =>
+      mecab.wakachi(test_sentences, (err, data) =>
       {
          if (err) {
             done(err);
          } else {
             result = discern(weight, data);
-            result = result >= 0 ? 'positive sentences!!' : 'negative sentences!!';
+            result = result >= 0 ? 'test ok!!' : 'test ng!!';
             done(null, result);
          }
       });

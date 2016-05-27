@@ -1,7 +1,7 @@
-/// <reference path="../ts/definitely/node.d.ts" />
-/// <reference path="../ts/definitely/mysql.d.ts" />
-/// <reference path="../ts/definitely/async.d.ts" />
-/// <reference path="../ts/definitely/mecab-async.d.ts" />
+/// <reference path="../../src/ts/definitely/node.d.ts" />
+/// <reference path="../../src/ts/definitely/mysql.d.ts" />
+/// <reference path="../../src/ts/definitely/async.d.ts" />
+/// <reference path="../../src/ts/definitely/mecab-async.d.ts" />
 "use strict";
 var config = require('./config');
 var mysql = require('mysql');
@@ -10,8 +10,10 @@ var Mecab = require('mecab-async');
 var connection;
 var weight;
 var mecab = new Mecab();
-var query = process.argv[2];
 var result;
+var test_sentences = "やばい！！韓国でマクドナルドを見つけたら飲んでみてください！めっちゃ美味しいです！";
+// "【完全決着】「マクドナルドのグランドビッグマック」vs「バーガーキングのビッグキング」本当にウマいのはどっちだ！ http://wp.me/p25BsW-34N0 ";
+// "公式垢のアイパス持ってるなら新人でも雑魚でもないと思うんだけど、ずいぶん酷い、最悪なツイートだな(；・∀・) ";
 /**
  * Create mysql connection
  *
@@ -43,13 +45,13 @@ async.waterfall([
     },
     // split text
     function (weight, done) {
-        mecab.wakachi(query, function (err, data) {
+        mecab.wakachi(test_sentences, function (err, data) {
             if (err) {
                 done(err);
             }
             else {
                 result = discern(weight, data);
-                result = result >= 0 ? 'positive sentences!!' : 'negative sentences!!';
+                result = result >= 0 ? 'test ok!!' : 'test ng!!';
                 done(null, result);
             }
         });
